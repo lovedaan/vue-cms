@@ -2,7 +2,7 @@
  * @Author: Marte
  * @Date:   2017-11-05 20:58:51
  * @Last Modified by:   Marte
- * @Last Modified time: 2017-11-05 21:02:08
+ * @Last Modified time: 2017-11-06 13:35:17
  */
 
 'use strict';
@@ -12,16 +12,15 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex);
 
-import actions as from './actions'
-import mutations from './mutations'
-import getters as from 'getters',
-import state from 'state'
-
+import state from './state.js'
+import mutations from './mutations.js'
+import * as getters from './getters.js'
+import * as actions from './actions.js'
 
 
 export default new Vuex.Store({
-    actions,
+    state,
     mutations,
     getters,
-    state
+    actions
 })

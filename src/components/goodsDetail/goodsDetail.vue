@@ -18,9 +18,13 @@
                     <div style="line-height:35px;">
                         购买数量：
                     </div>
-                    <div>
+                    <div style="position:relative;">
                         <NumberCount @changeCount="carNumber"></NumberCount>
+                        <transition name="ballmove" @enter="ballEnter" @before-enter="ballBeforeEnter" @after-enter="ballafterEnter">
+                            <span v-if="isShowBall" class="ball"></span>
+                        </transition>
                     </div>
+
                 </li>
             </ul>
             <div style="padding-bottom:15px;">
@@ -77,7 +81,7 @@
     import NumberCount from 'base/number/number'
     import CommentView from 'base/comment/comment'
     import { Toast } from 'mint-ui'
-    import bus from 'util/bus'
+    import {mapMutations} from 'vuex'
     export default{
         components:{
             NumberCount,
@@ -95,7 +99,8 @@
                 commentPageIndex:1,
                 commentList:[],
                 descMessage:{},
-                isAddCart:false
+                isAddCart:false,
+                isShowBall:false
             }
         },
         mounted(){
@@ -124,7 +129,24 @@
             },
             addNumberToCar(){
                 Toast('添加购物车成功');
-                this.isAddCart = true;
+                this.isShowBall = true;
+                this.addCountToCart({
+                    count:this.carNumbers,
+                    id:this.goodsId
+                });
+            },
+            ballBeforeEnter(el){
+                //设置小球的初始位置
+                el.style.transform = 'translate(0,0)';
+                el.style.webKitTransform = 'translate(0,0)';
+            },
+            ballEnter(el,done){
+                el.offsetWidth;
+                el.style.transform = 'translate(70px,300px)';
+                done();
+            },
+            ballafterEnter(){
+                this.isShowBall = false;
             },
             showDesc(){
                 this.isShowDesc = true;
@@ -171,13 +193,10 @@
             carNumber(val){
                 console.log('一共选了：'+val+'件商品');
                 this.carNumbers = val;
-            }
-        },
-        beforeDestroy(){
-            if(this.isAddCart){
-                console.log(23);
-                bus.$emit('countnumber',this.carNumbers);
-            }
+            },
+            ...mapMutations({
+                addCountToCart:'SETCOUNT'
+            })
         }
     }
 </script>
@@ -227,6 +246,19 @@
                 & > li{
                     display: flex;
                     margin-bottom:15px;
+                    position: relative;
+                    .ball{
+                        position: absolute;
+                        left: 50%;
+                        top: 50%;
+                        margin-top:-10px;
+                        margin-left: -20px;
+                        width: 20px;
+                        height: 20px;
+                        background:red;
+                        border-radius:50%;
+                        transition: all 2s ease 0s;
+                    }
                     & > div{
                         flex:1;
                         color:#666;
