@@ -2,7 +2,7 @@
  * @Author: Marte
  * @Date:   2017-11-05 20:58:58
  * @Last Modified by:   Marte
- * @Last Modified time: 2017-11-06 14:35:55
+ * @Last Modified time: 2017-11-07 14:35:26
  */
 
 'use strict';
@@ -31,6 +31,15 @@ const mutations = {
             oldData.push(info);
         }
 
+        state.countInfo = oldData;
+        storage('count',oldData);
+    },
+    [types.changeCarCount](state,info){
+
+        let oldData = storage('count') ? JSON.parse(storage('count')) : [];
+        let index = findCountIndex(oldData,info.id);
+        console.log(info.count);
+        oldData[index].count = info.count;
         state.countInfo = oldData;
         storage('count',oldData);
     }

@@ -9,7 +9,7 @@ import axios from 'axios'
 export default {
   name: 'app',
   mounted(){
-    this.$router.push('/home');
+    this.$router.push('/cart');
   }
 }
 </script>

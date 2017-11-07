@@ -2,7 +2,7 @@
  * @Author: Marte
  * @Date:   2017-11-02 10:26:29
  * @Last Modified by:   Marte
- * @Last Modified time: 2017-11-05 20:16:05
+ * @Last Modified time: 2017-11-07 11:17:02
  */
 
 'use strict';
@@ -294,6 +294,33 @@ export const getGoodsDetailInfo = (id) => {
 export const getGoodsDescMessage = (id) => {
     return new Promise((resolve, reject) => {
         const url = `api/goods/getdesc/${id}`;
+
+        axios.get(url).then((res) => {
+            if (res.data.status == 0) {
+                resolve(res.data);
+            } else {
+                reject(res.data);
+            }
+        }).catch((err) => {
+            reject(err);
+        });
+    });
+}
+
+//*****************   商品购物车的接口   **********************//
+/*
+ * 获取购物车页面数据
+ * @method: GET
+ * @url: api/goods/getshopcarlist/:ids
+ * @params: ids 商品id的数组，['2','4','5']
+ * @query:
+ * 商品id 字符串，多个id之间用逗号分隔
+ * Url ： /api/goods/getshopcarlist/87,88,89
+ */
+export const getShopcarList = (ids) => {
+    return new Promise((resolve, reject) => {
+        ids = ids.toString();
+        const url = `api/goods/getshopcarlist/${ids}`;
 
         axios.get(url).then((res) => {
             if (res.data.status == 0) {
