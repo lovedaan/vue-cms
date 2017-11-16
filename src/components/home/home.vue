@@ -8,25 +8,25 @@
         </div>
         <!-- 导航菜单 -->
         <div class="grid-wrap">
-            <ul class="mui-table-view mui-grid-view mui-grid-9">
-                <router-link tag="li" to="/newslist" class="mui-table-view-cell mui-media mui-col-xs-4"><a href="#">
+            <ul class="tui-table-view">
+                <router-link tag="li" to="/newslist" class="tui-table-view-cell"><a href="#">
                         <span class="tui-nav-icon"><img src="./1.png" alt="" /></span>
-                        <div class="mui-media-body">新闻资讯</div></a></router-link>
-                <router-link tag="li" to="/picList" class="mui-table-view-cell mui-media mui-col-xs-4"><a href="#">
+                        <div class="tui-media-body">新闻资讯</div></a></router-link>
+                <router-link tag="li" to="/picList" class="tui-table-view-cell"><a href="#">
                         <span class="tui-nav-icon"><img src="./2.png" alt="" /></span>
-                        <div class="mui-media-body">图片分享</div></a></router-link>
-                <router-link tag="li" to="/goodslist" class="mui-table-view-cell mui-media mui-col-xs-4"><a href="#">
+                        <div class="tui-media-body">图片分享</div></a></router-link>
+                <router-link tag="li" to="/goodslist" class="tui-table-view-cell"><a href="#">
                         <span class="tui-nav-icon"><img src="./3.png" alt="" /></span>
-                        <div class="mui-media-body">商品购买</div></a></router-link>
-                <router-link tag="li" to="/feedback" class="mui-table-view-cell mui-media mui-col-xs-4"><a href="#">
+                        <div class="tui-media-body">商品购买</div></a></router-link>
+                <router-link tag="li" to="/feedback" class="tui-table-view-cell"><a href="#">
                         <span class="tui-nav-icon"><img src="./4.png" alt="" /></span>
-                        <div class="mui-media-body">留言反馈</div></a></router-link>
-                <router-link tag="li" to="/videos" class="mui-table-view-cell mui-media mui-col-xs-4"><a href="#">
+                        <div class="tui-media-body">留言反馈</div></a></router-link>
+                <router-link tag="li" to="/videos" class="tui-table-view-cell"><a href="#">
                         <span class="tui-nav-icon"><img src="./5.png" alt="" /></span>
-                        <div class="mui-media-body">视频专区</div></a></router-link>
-                <router-link tag="li" to="/callme" class="mui-table-view-cell mui-media mui-col-xs-4"><a href="#">
+                        <div class="tui-media-body">视频专区</div></a></router-link>
+                <router-link tag="li" to="/callme" class="tui-table-view-cell"><a href="#">
                         <span class="tui-nav-icon"><img src="./6.png" alt="" /></span>
-                        <div class="mui-media-body">联系我们</div></a>
+                        <div class="tui-media-body">联系我们</div></a>
                 </router-link>
             </ul>
         </div>
@@ -34,6 +34,7 @@
 </template>
 <script type="text/javascript">
      import {getHomeBanner} from 'api/index'
+     import {mapMutations} from 'vuex'
      export default{
         data(){
             return {
@@ -42,6 +43,7 @@
         },
         mounted(){
             this.fetchBanner();
+            this.changeTitle('vue cms新闻站点');
         },
         methods:{
             fetchBanner(){
@@ -54,7 +56,10 @@
                 }).catch((err)=>{
 
                 });
-            }
+            },
+            ...mapMutations({
+                changeTitle:'SETHEADERCOUNT'
+            })
         }
      }
 </script>
@@ -75,10 +80,23 @@
             }
         }
         .grid-wrap{
-            .mui-grid-view.mui-grid-9{
+            .tui-table-view{
                 background:#fff;
-                border-top: none;
-                border-left: none;
+                overflow: hidden;
+                padding-top: 10px;
+                .tui-table-view-cell{
+                    width:33.33%;
+                    float: left;
+                    text-align: center;
+                    margin-bottom:14px;
+                    & > a{
+                        display: block;
+                        width: 100%;
+                        .tui-media-body{
+                            padding: 8px 0;
+                        }
+                    }
+                }
                 .tui-nav-icon{
                     display: inline-block;
                     width:20vw;

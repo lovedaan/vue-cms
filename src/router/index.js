@@ -15,7 +15,7 @@ import GoodsDetail from 'components/goodsDetail/goodsDetail'
 Vue.use(Router)
 
 export default new Router({
-    linkActiveClass: 'mui-active',
+    linkActiveClass: 'tui-nav-active',
     routes: [{
         path: '/',
         name: 'Main',

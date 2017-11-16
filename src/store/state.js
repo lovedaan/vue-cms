@@ -2,7 +2,7 @@
  * @Author: Marte
  * @Date:   2017-11-05 20:59:17
  * @Last Modified by:   Marte
- * @Last Modified time: 2017-11-06 14:22:17
+ * @Last Modified time: 2017-11-08 10:14:05
  */
 
 'use strict';
@@ -20,7 +20,8 @@ function isObject (obj) {
 let infos = storage('count') ? JSON.parse(storage('count')) : [];
 
 const state = {
-    countInfo: infos
+    countInfo: infos,
+    headerTitle:'vue cms新闻站点'
 };
 
 export default state

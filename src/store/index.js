@@ -2,10 +2,12 @@
  * @Author: Marte
  * @Date:   2017-11-05 20:58:51
  * @Last Modified by:   Marte
- * @Last Modified time: 2017-11-06 13:35:17
+ * @Last Modified time: 2017-11-15 09:25:28
  */
 
 'use strict';
+
+require('es6-promise').polyfill()
 
 import Vue from 'vue'
 import Vuex from 'vuex'

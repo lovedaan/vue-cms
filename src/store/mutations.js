@@ -2,7 +2,7 @@
  * @Author: Marte
  * @Date:   2017-11-05 20:58:58
  * @Last Modified by:   Marte
- * @Last Modified time: 2017-11-07 14:35:26
+ * @Last Modified time: 2017-11-08 10:15:20
  */
 
 'use strict';
@@ -42,6 +42,9 @@ const mutations = {
         oldData[index].count = info.count;
         state.countInfo = oldData;
         storage('count',oldData);
+    },
+    [types.setHeaderTitle](state,title){
+        state.headerTitle = title;
     }
 };
 

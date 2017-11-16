@@ -1,31 +1,27 @@
 <template>
     <div class="pictureList">
-        <!-- 头部 -->
-        <mt-header fixed title="图片分享">
-            <a href="javascript:;" slot="left" @click="back">
-                <mt-button icon="back">返回</mt-button>
-            </a>
-        </mt-header>
         <!-- 头部导航 -->
-        <div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
-            <div class="mui-scroll">
-                <a v-for="(item,index) in typesList" @click="toggleTab(item.id)" class="mui-control-item" :class="{'mui-active': index == 0}">
+        <div class="tui-scroll-wrapper" ref="scrollWrapper">
+            <div class="tui-scroll" ref="tuiScroll">
+                <a v-for="(item,index) in typesList" @click="toggleTab(item.id)" class="tui-control-item" :class="{'mui-active': index == 0}">
                     {{item.title}}
                 </a>
             </div>
         </div>
         <!-- 图片列表 -->
         <div class="picListWrap">
-            <ul v-if="picList.length" class="picList">
-                <li v-for="(it,index) in picList" @click="toPicDetai(it.id)" :data-id="it.id">
-                    <img v-lazy="it.img_url" alt="" />
-                    <div class="dark">
-                        <p>{{it.title}}</p>
-                        <p>{{it.zhaiyao}}</p>
-                    </div>
-                </li>
-            </ul>
-            <h2 class="noData" v-else>暂无数据！</h2>
+            <scrollView class="picListBox" :data="picList">
+                <ul v-if="picList.length" class="picList">
+                    <li v-for="(it,index) in picList" @click="toPicDetai(it.id)" :data-id="it.id">
+                        <img v-lazy="it.img_url" alt="" />
+                        <div class="dark">
+                            <p>{{it.title}}</p>
+                            <p>{{it.zhaiyao}}</p>
+                        </div>
+                    </li>
+                </ul>
+                <h2 class="noData" v-else>暂无数据！</h2>
+            </scrollView>
         </div>
         <!-- 图片详情的容器 -->
         <transition name="picslide">
@@ -35,10 +31,15 @@
     </div>
 </template>
 <script type="text/javascript">
-    import mui from 'mui'
     import {getPicTypesList,getPicList} from 'api/index'
     import { Lazyload } from 'mint-ui'
+    import BScroll from 'better-scroll'
+    import scrollView from 'base/scroll/scroll'
+    import {mapMutations} from 'vuex'
      export default {
+        components:{
+            scrollView
+        },
         data(){
             return {
                 typesList : [],
@@ -47,19 +48,41 @@
             }
         },
         mounted(){
+            this.changeTitle('图片分享列表');
+            setTimeout(()=>{
+                this.initScrollOri();
+            },50);
+
             this.fetchTypesList();
         },
         methods:{
+            initScrollOri(){
+                this.scroll = new BScroll(this.$refs.scrollWrapper,{
+                    scrollX:true,
+                    scrollY:false,
+                    click:true,
+                    probeType:2
+                });
+            },
+            refreshScroll(){
+                this.scroll && this.scroll.refresh();
+            },
             fetchTypesList(){
                 this.typesList = [];
                 getPicTypesList().then((res)=>{
                     console.log(res);
                     if(res.message.length){
+                        let tuiScroll = this.$refs.tuiScroll;
+                        let w = document.documentElement.clientWidth;
                         this.typesList = res.message;
-                        mui('.mui-scroll-wrapper').scroll({
-                            deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
-                        });
-
+                        setTimeout(()=>{
+                            let scrollChildren = tuiScroll.children;
+                            for(let i = 0;i<scrollChildren.length;i++){
+                                scrollChildren[i].style.width = w/4+'px';
+                            }
+                            tuiScroll.style.width = w/4 * scrollChildren.length + 'px';
+                            this.refreshScroll();
+                        },500);
                         this.getPicDetailList();
                     }
                 });
@@ -86,18 +109,50 @@
                     }
                 });
             },
-            back(){
-                this.$router.back();
+            ...mapMutations({
+                changeTitle:'SETHEADERCOUNT'
+            })
+        },
+        watch:{
+            typesList(){
+                setTimeout(()=>{
+
+                },50);
+            },
+            $route(to){
+                if(to.path == '/picList'){
+                    this.changeTitle('图片分享列表');
+                }
             }
         }
      }
 </script>
 <style type="text/css" lang="less">
     .pictureList{
-        padding-top:40px;
+
+        .tui-scroll-wrapper{
+            width: 100%;
+            overflow: hidden;
+            .tui-control-item{
+                display: inline-block;
+                text-align: center;
+                height: 35px;
+                line-height:35px;
+            }
+        }
         .picListWrap{
             background: #fff;
             padding:10px;
+            position: fixed;
+            left: 0;
+            top: 75px;
+            bottom: 0;
+            width: 100%;
+            overflow: hidden;
+            box-sizing:border-box;
+            .picListBox{
+                height: 100%;
+            }
             .noData{
                 text-align: center;
                 padding: 15px 0;

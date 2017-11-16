@@ -1,5 +1,6 @@
 <template>
     <div class="goodsDetail">
+        <scrollView class="goodsDetailBox" ref="scroll" :data="goodsSlides">
         <!-- 轮播图 -->
         <div class="goodsCrousel">
             <mt-swipe :auto="5000" class="tui-goods-slide">
@@ -50,11 +51,6 @@
 
         <!-- 商品评论 -->
         <div class="goodsCommentWrap" v-show="isShowComment">
-            <mt-header fixed title="商品评论">
-                <a href="javascript:;" slot="left" @click="hideComment">
-                    <mt-button icon="back">返回</mt-button>
-                </a>
-            </mt-header>
             <div class="goodsCommentCon">
                 <!-- 评论组件 -->
                 <CommentView :commentList="commentList" @sumitHandle="handleComment" ref="commentWrap"></CommentView>
@@ -63,17 +59,13 @@
 
         <!-- 商品评论 -->
         <div class="goodsDescWrap" v-show="isShowDesc">
-            <mt-header fixed title="商品图文详情">
-                <a href="javascript:;" slot="left" @click="hideDesc">
-                    <mt-button icon="back">返回</mt-button>
-                </a>
-            </mt-header>
             <div class="goodsCommentCon">
                 <!-- 评论组件 -->
                 <h4>{{descMessage.title}}</h4>
                 <div v-html="descMessage.content"></div>
             </div>
         </div>
+        </scrollView>
     </div>
 </template>
 <script type="text/javascript">
@@ -82,10 +74,12 @@
     import CommentView from 'base/comment/comment'
     import { Toast } from 'mint-ui'
     import {mapMutations} from 'vuex'
+    import scrollView from 'base/scroll/scroll'
     export default{
         components:{
             NumberCount,
-            CommentView
+            CommentView,
+            scrollView
         },
         data(){
             return {
@@ -106,9 +100,13 @@
         mounted(){
             this.goodsId = this.$route.params.goodsid;
 
-            this.getGoodsSlides();
+            this.changeTitle('商品详情');
 
-            this.getDetailsInfo();
+            Promise.all([getThumImages(this.goodsId),getGoodsDetailInfo(this.goodsId)]).then(res=>{
+                console.log(res);
+                this.goodsSlides = res[0].message;
+                this.goodsInfo = res[1].message[0];
+            });
 
         },
         methods:{
@@ -150,10 +148,19 @@
             },
             showDesc(){
                 this.isShowDesc = true;
+                this.changeTitle('商品图文详情');
                 this.getGoodsDescMsg();
+
+                setTimeout(()=>{
+                    this.$refs.scroll.refresh();
+                },100);
             },
             hideDesc(){
+                this.changeTitle('商品详情');
                 this.isShowDesc = false;
+                setTimeout(()=>{
+                    this.$refs.scroll.refresh();
+                },100);
             },
             getGoodsDescMsg (){
                 getGoodsDescMessage(this.goodsId).then(res=>{
@@ -184,18 +191,27 @@
                 });
             },
             showComment(){
+                this.changeTitle('商品评论');
                 this.isShowComment = true;
                 this.fetchCommentData();
+                setTimeout(()=>{
+                    this.$refs.scroll.refresh();
+                },100);
             },
             hideComment(){
+                this.changeTitle('商品详情');
                 this.isShowComment = false;
+                setTimeout(()=>{
+                    this.$refs.scroll.refresh();
+                },100);
             },
             carNumber(val){
                 console.log('一共选了：'+val+'件商品');
                 this.carNumbers = val;
             },
             ...mapMutations({
-                addCountToCart:'SETCOUNT'
+                addCountToCart:'SETCOUNT',
+                changeTitle:'SETHEADERCOUNT'
             })
         }
     }
@@ -203,15 +219,17 @@
 <style type="text/css" lang="less">
     .goodsDetail{
         position: fixed;
-        top: 40px;
+        top: 50px;
         left: 0;
         bottom: 0;
-        overflow-y:scroll;
+        overflow:hidden;
         width: 100%;
         background: #fff;
-        padding: 8px;
         box-sizing: border-box;
         z-index: 888;
+        .goodsDetailBox{
+            height: 100%;
+        }
         .goodsCrousel{
             width: 100%;
             height:300px;
@@ -309,10 +327,8 @@
             top: 0px;
             bottom: 0;
             width: 100%;
-            overflow-y: scroll;
             background:#fff;
             z-index:77;
-            padding-top:40px;
             .goodsCommentCon{
                 padding: 10px;
             }
@@ -323,10 +339,8 @@
             top: 0px;
             bottom: 0;
             width: 100%;
-            overflow-y: scroll;
             background:#fff;
             z-index:77;
-            padding-top:40px;
             .goodsCommentCon{
                 padding: 10px;
                 h4{

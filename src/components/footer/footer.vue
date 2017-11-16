@@ -1,22 +1,23 @@
 <template>
     <div class="footer">
-        <nav class="mui-bar mui-bar-tab">
-            <router-link class="mui-tab-item" :to="{path:'/home'}">
-                <span class="mui-icon mui-icon-home"></span>
-                <span class="mui-tab-label">首页</span>
-            </router-link>
-            <router-link class="mui-tab-item" :to="{path:'/member'}">
-                <span class="mui-icon mui-icon-contact"></span>
-                <span class="mui-tab-label">会员</span>
-            </router-link>
-            <router-link class="mui-tab-item" :to="{path:'/cart'}">
-                <span class="mui-icon mui-icon-extra mui-icon-extra-cart"><span class="mui-badge" v-show="getCountNumber">{{getCountNumber}}</span></span>
-                <span class="mui-tab-label">购物车</span>
-            </router-link>
-            <router-link class="mui-tab-item" :to="{path:'/search'}">
-                <span class="mui-icon mui-icon-search"></span>
-                <span class="mui-tab-label">搜索</span>
-            </router-link>
+        <nav class="tui-bar-tab">
+            <a href="javascript:;" @click="goRouter('/home')" class="tui-bar-item" :class="{'tui-nav-active':str == '/home'}">
+                <i class="iconfont icon-home icon-custom"></i>
+                <span>主页</span>
+            </a>
+            <a href="javascript:;" @click="goRouter('/member')" class="tui-bar-item" :class="{'tui-nav-active':str == '/member'}">
+                <i class="iconfont icon-account icon-custom"></i>
+                <span>会员</span>
+            </a>
+            <a href="javascript:;" @click="goRouter('/cart')" class="tui-bar-item" :class="{'tui-nav-active':str == '/cart'}">
+                <i class="iconfont icon-cart icon-custom"></i>
+                <span class="cartBar" v-if="getCountNumber">{{getCountNumber}}</span>
+                <span>购物车</span>
+            </a>
+            <a href="javascript:;" @click="goRouter('/search')" class="tui-bar-item" :class="{'tui-nav-active':str == '/search'}">
+                <i class="iconfont icon-search icon-custom"></i>
+                <span>搜索</span>
+            </a>
         </nav>
     </div>
 </template>
@@ -28,7 +29,7 @@
         },
         data(){
             return {
-
+                str:'/home'
             }
         },
         created(){
@@ -38,8 +39,9 @@
             //console.log(this.getCountNumber);
         },
         methods:{
-            fn(){
-                alert(123);
+            goRouter(path){
+                this.str = path;
+                this.$router.push(path);
             }
         }
      }
@@ -52,6 +54,43 @@
         left: 0;
         bottom: 0;
         z-index:5;
-        background: #888;
+        background: #d2d2d2;
+        .tui-bar-tab{
+            display: flex;
+            .tui-bar-item{
+                flex:1;
+                text-align: center;
+                height:50px;
+                box-sizing:border-box;
+                padding-top: 4px;
+                position: relative;
+                .icon-custom{
+                    font-size: 22px;
+                }
+                .cartBar{
+                    position: absolute;
+                    width: 16px;
+                    height: 16px;
+                    background:red;
+                    color:#fff;
+                    border-radius: 100px;
+                    top:-5px;
+                    left: 60%;
+                    font-size: 12px;
+                    text-align: center;
+                    line-height:16px;
+                }
+                & > span{
+                    display: block;
+                    width: 100%;
+                    text-align: center;
+                    font-size:14px;
+                    margin-top: 2px;
+                }
+                &.tui-nav-active{
+                    color:#0094ff;
+                }
+            }
+        }
     }
 </style>

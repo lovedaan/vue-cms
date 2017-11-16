@@ -1,28 +1,22 @@
 <template>
     <div class="newslist">
-        <!-- 头部 -->
-        <mt-header fixed title="新闻资讯">
-            <a href="javascript:;" slot="left" @click="back">
-                <mt-button icon="back">返回</mt-button>
-            </a>
-        </mt-header>
         <!-- 新闻列表 -->
         <div class="newsListWrap">
-            <ul class="mui-table-view">
-                <li class="mui-table-view-cell mui-media" v-for="(news,index) in newsList" :key="index" @click="goNewsDetail(news.id)">
-                    <a href="javascript:;">
-                        <img class="mui-media-object mui-pull-left" :src="news.img_url">
-                        <div class="mui-media-body">
-                            {{news.title}}
-                            <p class='mui-ellipsis'>{{news.zhaiyao}}</p>
-                            <div class="tui-ft">
-                                <span>发表时间：{{news.add_time | formatDate}}</span>
-                                <span class="last-click">点击数：{{news.click}}</span>
+            <scrollView class="newsBox" :data="newsList">
+                <ul class="tui-news-view">
+                    <li class="tui-news-view-cell" v-for="(news,index) in newsList" :key="index" @click="goNewsDetail(news.id)">
+                            <img class="tui-media-object" :src="news.img_url">
+                            <div class="tui-media-body">
+                                <h4>{{news.title}}</h4>
+                                <p class='tui-ellipsis'>{{news.zhaiyao}}</p>
+                                <div class="tui-ft">
+                                    <span>发表时间：{{news.add_time | formatDate}}</span>
+                                    <span class="last-click">点击数：{{news.click}}</span>
+                                </div>
                             </div>
-                        </div>
-                    </a>
-                </li>
-            </ul>
+                    </li>
+                </ul>
+            </scrollView>
         </div>
         <!-- 新闻详情的路由占位 -->
         <transition name="slide">
@@ -32,7 +26,12 @@
 </template>
 <script type="text/javascript">
     import {getNewsList} from 'api/index'
+    import scrollView from 'base/scroll/scroll'
+    import {mapMutations} from 'vuex'
      export default{
+        components:{
+            scrollView
+        },
         data(){
             return{
                 newsList:[]
@@ -40,6 +39,7 @@
         },
         mounted(){
             this.fetchNewsData();
+            this.changeTitle('新闻资讯列表');
         },
         methods:{
             fetchNewsData(){
@@ -61,8 +61,15 @@
                     }
                 });
             },
-            back(){
-                this.$router.back();
+            ...mapMutations({
+                changeTitle:'SETHEADERCOUNT'
+            })
+        },
+        watch:{
+            $route(to){
+                if(to.path == '/newslist'){
+                    this.changeTitle('新闻资讯列表');
+                }
             }
         }
      }
@@ -70,20 +77,54 @@
 <style type="text/css" lang="less">
     .newsListWrap{
         background: #fff;
-        padding-top: 40px;
-        .mui-table-view{
-           .mui-media-object{
-                line-height: 70px;
-                max-width: 75px;
-                height: 70px;
-            }
-            .tui-ft{
-                margin-top: 1em;
-                font-size: 12px;
-                color:#0094ff;
-                .last-click{
-                    margin-left: 20px;
+        position: fixed;
+        top: 40px;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        overflow: hidden;
+        .newsBox{
+            height: 100%;
+        }
+        .tui-news-view{
+            .tui-news-view-cell{
+                border-bottom: 1px solid #ccc;
+                display: flex;
+                padding: 5px;
+                &:last-child{
+                    border-bottom: none;
                 }
+                .tui-media-object{
+                    flex:0 0 75px;
+                    line-height: 70px;
+                    max-width: 75px;
+                    height: 70px;
+                    margin-right: 8px;
+                }
+                .tui-media-body{
+                    flex:1;
+                    overflow: hidden;
+                    display: flex;
+                    flex-direction:column;
+                    justify-content:space-around;
+                    & h4, p{
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+                    p{
+                        margin-bottom:0;
+                    }
+                }
+                .tui-ft{
+
+                    font-size: 12px;
+                    color:#0094ff;
+                    .last-click{
+                        margin-left: 20px;
+                    }
+                }
+
             }
         }
     }

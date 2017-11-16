@@ -1,12 +1,8 @@
 <template>
     <div class="main">
-        <!-- 1.头部 -->
-        <mt-header fixed title="新闻"></mt-header>
         <!-- 2.底部路由切换的显示的区域 -->
         <div id="main">
-            <transition name="slide">
-                <router-view></router-view>
-            </transition>
+            <router-view></router-view>
         </div>
         <!-- 3.底部tab切换 -->
         <FooterView></FooterView>

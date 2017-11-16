@@ -2,7 +2,7 @@
 * @Author: Marte
 * @Date:   2017-11-06 12:28:03
 * @Last Modified by:   Marte
-* @Last Modified time: 2017-11-06 14:54:58
+* @Last Modified time: 2017-11-08 10:16:07
 */
 
 'use strict';
@@ -17,4 +17,8 @@ export const getCountNumber = (state)=>{
         }
     }
     return count;
+}
+
+export const getHeaderTitle = (state)=>{
+    return state.headerTitle;
 }
