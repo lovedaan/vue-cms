@@ -30,6 +30,12 @@
                 </router-link>
             </ul>
         </div>
+		<div style="display:none;"><mt-button type="primary" size="large" @click.native="openPicker">primary</mt-button></div>
+		<mt-datetime-picker
+		ref="picker"
+		type="time"
+		v-model="pickerValue">
+	  </mt-datetime-picker>
     </div>
 </template>
 <script type="text/javascript">
@@ -38,7 +44,8 @@
      export default{
         data(){
             return {
-                bannerList:[]
+                bannerList:[],
+				pickerValue:''
             }
         },
         mounted(){
@@ -46,6 +53,9 @@
             this.changeTitle('vue cms新闻站点');
         },
         methods:{
+			openPicker() {
+			this.$refs.picker.open();
+		  },
             fetchBanner(){
                 this.bannerList = [];
                 getHomeBanner().then((res)=>{
