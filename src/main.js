@@ -6,7 +6,7 @@ import App from './App'
 import store from './store/index'
 
 import router from './router'
-import {Button,Field ,Swipe, SwipeItem,Switch ,Header ,DatetimePicker } from 'mint-ui'
+import {Button,Field ,Swipe, SwipeItem,Switch ,Header  } from 'mint-ui'
 //import 'mint-ui/lib/style'
 
 import 'common/css/iconfont'
@@ -18,7 +18,6 @@ Vue.component(Switch.name, Switch);
 Vue.component(Swipe.name, Swipe);
 Vue.component(SwipeItem.name, SwipeItem);
 Vue.component(Header.name, Header);
-Vue.component(DatetimePicker.name, DatetimePicker);
 
 Vue.config.productionTip = false
 

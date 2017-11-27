@@ -1,10 +1,7 @@
 <template>
     <div class="number-wrap">
         <div class="number_left" @click="substrict">-</div>
-        <div class="number_txt">
-            <input v-model="newCount" class="inputVal" type="text" readonly="true" />
-            <!-- @input="changeInput($event)" -->
-        </div>
+        <div class="number_txt">{{newCount}}</div>
         <div class="number_right" @click="add">+</div>
     </div>
 </template>
@@ -77,17 +74,8 @@
         .number_txt{
             flex:2;
             padding:0;
-            .inputVal{
-                outline: none;
-                text-align:left;
-                height: 34px;
-                padding: 0 0 0 10px;
-                border: none;
-                margin: 0;
-                border-left: 1px solid #888;
-                border-right: 1px solid #888;
-                background:none;
-            }
+            border-left: 1px solid #888;
+            border-right: 1px solid #888;
         }
     }
 </style>

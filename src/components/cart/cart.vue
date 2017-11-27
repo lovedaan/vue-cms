@@ -3,13 +3,13 @@
         <div v-if="carList.length">
             <div class="cartWrap">
                 <div :data-index="index" class="cartItem" v-for="(car,index) in carList">
-                    <mt-switch @change.native="toChangeOff(index)" v-model="value[index]" class="switch"></mt-switch>
+                    <mt-switch  @change.native="toChangeOff(index,car.id)" v-model="value[index]" class="switch"></mt-switch>
                     <img :src="car.thumb_path" class="img" alt="" />
                     <div class="cartInfo">
                         <h4>{{car.title}}</h4>
                         <ul class="infoList">
                             <li><span class="sell_price">￥{{car.sell_price}}</span></li>
-                            <li :data-count="car.cou"><numberView :id="car.id" :count="car.cou" @change-count="carNumberCount"></numberView></li>
+                            <li :data-count="car.cou"><numberView :id="car.id" :count="car.cou" @changecount="carNumberCount"></numberView></li>
                             <li><a href="javascript:;" class="deleteBtn">删除</a></li>
                         </ul>
                     </div>
@@ -18,7 +18,7 @@
             <div class="totalmsg">
                 <div class="msgleft">
                     <h4>总计(不含运费)</h4>
-                    <p>以购买商品件，总计￥元</p>
+                    <p>已购买{{sumAll}}件商品，总计￥{{settment}}元</p>
                 </div>
                 <mt-button class="tui-btn" type="danger">去结算</mt-button>
             </div>
@@ -42,9 +42,17 @@
                ids : [],
                carList:[],
                sumCount:0,
-               storageData:[]
+               storageData:[],
+               sumAll : 0
             }
         },
+       computed:{
+          settment(){
+            let trueArr = this.value.filter(v=>v===true);
+            this.sumAll = trueArr.length;
+            return this.getAcountTotal();
+          }
+       },
         mounted(){
             let storages = storage('count') ? JSON.parse(storage('count')) : [];
             if(!storages.length){
@@ -62,6 +70,17 @@
             this.fetchCarData();
         },
         methods:{
+            getAcountTotal(){
+              let acountTotal = 0;
+              let storages = storage('count') ? JSON.parse(storage('count')) : [];
+              this.value.forEach((item,index)=>{
+                if(item == true){
+                  acountTotal += storages[index].count * this.carList[index].sell_price;
+                }
+              });
+
+              return acountTotal;
+            },
             fetchCarData(){
                 this.carList = [];
                 getShopcarList(this.ids).then(res=>{
@@ -69,28 +88,30 @@
                     if(res.message.length){
 
                         let ret = this.storageData;
-                        //console.log(ret);
                         for(let i = 0; i<ret.length;i++){
                             res.message[i].cou = ret[i].count;
+                            this.value.push(false);
                         }
-                        //console.log(res.message);
                         this.carList = res.message;
 
                     }
                 });
             },
-            toChangeOff(index){
-                console.log(this.value[index]);
+            toChangeOff(index,id){
+
             },
             carNumberCount(val){
-                //console.log('一共选了：'+val+'件商品');
-                console.log(val);
                 this.addCountToCart(val);
-
+                this.getAcountTotal();
             },
             ...mapMutations({
                 addCountToCart:'CHANGECARCOUNT'
             })
+        },
+        watch : {
+            storageData(val){
+                console.log(val);
+            }
         }
      }
 </script>
